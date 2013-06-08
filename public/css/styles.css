@@ -1,0 +1,106 @@
+html, body {
+    background-color: #787878;
+}
+
+.game {
+    margin-top: 100px;
+    margin-left: 100px;
+}
+
+#canvas {
+    border: 1px solid #555;
+    background: white;
+}
+#dodgecube {
+    margin-right: 50px;
+    margin-bottom: 50px;
+
+}
+
+.score_field {
+    background: white;
+    border: 1px solid #555;
+    width: 540px;
+    height: 120px;
+}
+
+.score {
+    float: right;
+}
+
+.padded {
+    padding: 10px;
+}
+
+.left {
+    float: left;
+}
+
+.scores {
+    width: 400px;
+    padding-left: 20px;
+    padding-right: 20px;
+    border: 3px solid black;
+    background-color: #555;
+    color: black;
+}
+
+.player_score {
+    background-color: #555;
+}
+
+
+#menu {
+    margin: 100px  130px;
+    position: absolute;
+    z-index: 101;
+    background:rgba(0,0,0,0.5);
+    padding: 10px 40px 40px 40px;
+    border-radius: 5px;
+}
+
+#player_name {
+    padding: 8px;
+    margin: 10px 0px;
+    width: 200px;
+    font-size: 1em;
+}
+
+#new_game {
+    width: 200px;
+}
+
+.text {
+    font-family: Oswald Regular,Arial Narrow,Arial,Helvetica,sans-serif;
+    font-size: 2em;    
+    font-weight: normal;
+    text-transform: uppercase;
+}
+
+.positive {
+    background: #da9437;
+}
+
+.button {
+    text-align: center;
+    border-radius: 5px;
+    color: #542e11;
+    cursor: pointer;
+}
+
+.button:hover {
+    color: white;
+}
+
+.button:active {
+    opacity: .9;
+}
+
+.high_score {
+    padding-right: 20px;
+}
+
+.title {
+    text-align: center;
+    font-weight: bold;
+}
