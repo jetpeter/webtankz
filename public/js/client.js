@@ -3,9 +3,9 @@
 	var TANK_BUFFER = 1;
 
  	var tankBody = new Image();
-	tankBody.src = 'https://dl.dropboxusercontent.com/u/63857783/tank.png';
+	tankBody.src = 'http://54.218.14.138/images/tank.png';
 	var tankTurret = new Image();
-	tankTurret.src = 'https://dl.dropboxusercontent.com/u/63857783/turret.png';
+	tankTurret.src = 'http://54.218.14.138/images/turret.png';
 	//Record the current key presses
 	var keyMap;
 	//The socket connection to the server
