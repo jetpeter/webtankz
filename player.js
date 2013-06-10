@@ -1,12 +1,15 @@
 
 var Player = function(startX, startY, rotation, turretRotation, id) {
 	var SPEED = 5;
-	var ROTATION_RATE = 8;
+	var ROTATION_RATE = 6;
+	var SHOT_DELAY = 30;
+
 	var x = startX,
 		y = startY,
 		rotation = rotation,
 		turretRotation = turretRotation,
 		id,
+		lastShot = 0,
 		keyMap = {
 			"up" : false,
 			"down": false,
@@ -32,7 +35,8 @@ var Player = function(startX, startY, rotation, turretRotation, id) {
 
  		if (keyMap.right) {
  			updateTurret(true);
- 		}	
+ 		}
+ 		lastShot--;
 	}
 
  	function getPosition() {
@@ -43,6 +47,15 @@ var Player = function(startX, startY, rotation, turretRotation, id) {
  			'rotation': rotation,
  			'turretRotation': turretRotation,
  		};
+ 	}
+
+ 	function getPositionForShot() {
+ 		if (lastShot <= 0) {
+ 			lastShot = SHOT_DELAY;
+ 			return getPosition();
+ 		} else {
+ 			return false;
+ 		}
  	}
 
 	function getId() {
@@ -100,6 +113,7 @@ var Player = function(startX, startY, rotation, turretRotation, id) {
 		getPosition: getPosition,
 		getId: getId,
 		updateKeyMap: updateKeyMap,
+		getPositionForShot: getPositionForShot,
 	}
 }
 

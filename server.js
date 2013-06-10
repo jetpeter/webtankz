@@ -1,4 +1,6 @@
 
+var REFRESH_RATE = 30;
+
 var util = require("util"),
 	io = require("socket.io"),
  	Player = require('./player').Player,
@@ -24,6 +26,7 @@ function onSocketConnection(client) {
 	client.on('disconnect', onClientDisconnect);
 	client.on('new player', onClientConnect);
 	client.on('update keys', updatePressedKeys);
+	client.on('fire shot', newShot);
 };
 
 function onClientDisconnect() {
@@ -48,8 +51,8 @@ function onClientConnect(data) {
 	//There are players on the server to start broadcasting locations
 	if (players.length == 1) {
 		util.log("First Player connected starting game");
-		instance = setInterval(broadcastPlayerData, 60);
-	}
+		instance = setInterval(broadcastPlayerData, REFRESH_RATE);
+	};
 };
 
 function broadcastPlayerData() {
@@ -59,8 +62,18 @@ function broadcastPlayerData() {
 		var player = players[i];
 		player.update();
 		locations.push(player.getPosition());
-	}
-	socket.sockets.emit("update", locations);
+	};
+	var shotLocations = [];
+	for (i = 0; i < shots.length; i++) {
+		var shot = shots[i];
+		if (shot.isOverMaxAge()) {
+			shots.splice(i, 1);
+		} else {
+			shot.updatePosition();
+			shotLocations.push(shot.getPosition());
+		}
+	};
+	socket.sockets.emit("update", {"playerLocations": locations, "shotLocations": shotLocations});
 };
 
 function updatePressedKeys(data) {
@@ -74,13 +87,22 @@ function updatePressedKeys(data) {
 	player.updateKeyMap(data);
 };
 
+function newShot(data) {
+	var player = playerById(this.id);
+	var pos = player.getPositionForShot();
+	//Only add the shot if the player is allowed to take a shot
+	if (pos) {
+		shots.push(new Shot(pos.x, pos.y, pos.turretRotation + pos.rotation));
+	}
+}
+
 function playerById(id) {
     var i;
     for (i = 0; i < players.length; i++) {
         if (players[i].getId() == id)
             return players[i];
-    };
+    }
     return false;
-};
+}
 
 init();

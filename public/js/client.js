@@ -1,16 +1,18 @@
 (function (window) {
 	//Set the number of tanks to pre allocate.
 	var TANK_BUFFER = 1;
+	var SHOT_BUFFER = 10;
 
  	var tankBody = new Image();
-	tankBody.src = 'http://54.218.14.138/images/tank.png';
+	tankBody.src = 'http://54.218.14.138/webtankz/images/tank.png';
 	var tankTurret = new Image();
-	tankTurret.src = 'http://54.218.14.138/images/turret.png';
+	tankTurret.src = 'http://54.218.14.138/webtankz/images/turret.png';
 	//Record the current key presses
 	var keyMap;
 	//The socket connection to the server
 	var socket;
 	var tanks;
+	var shots;
 
 	var Tank = function () {
 		var x = 0;
@@ -21,8 +23,8 @@
 	 	var ctx = canvas.getContext('2d');
 	 	var color = '#'+Math.floor(Math.random()*16777215).toString(16);
 	 	//Set up the canvas
-	 	canvas.width = 75;
-		canvas.height = 75;
+	 	canvas.width = 60;
+		canvas.height = 60;
 		canvas.style.position = 'absolute';
 		canvas.style.zIndex = '1000000';
 		canvas.style.top = x + 'px';
@@ -48,9 +50,11 @@
 			ctx.drawImage(tankTurret, -(tankTurret.width / 2), -(tankTurret.height * 2 / 3));
 	 		
 	 		ctx.restore();
-	 		canvas.style.left = x + 'px';
-	 		canvas.style.top = y + 'px';
-	 	};
+	 		var xOffset = x - 6 - tankBody.width / 2;
+	 		var yOffset = y - tankBody.height / 2;
+	 		canvas.style.left = xOffset + 'px';
+	 		canvas.style.top = yOffset + 'px';
+	 	}
 
 	 	function update(newX, newY, newRotation, newTRotation) {
 	 		x = newX;
@@ -58,17 +62,67 @@
 	 		rotation = newRotation;
 	 		turretRotation = newTRotation;
 	 		draw();
-	 	};
+	 	}
 
 	 	function hide() {
 	 		//Move the canvas off the sceen;
 	 		y = -100;
 	 		draw();
-	 	};
+	 	}
 
 	 	function remove() {
 	 		canvas.parentNode.removeChild(canvas);
+	 	}
+
+	 	return {
+	 		update : update,
+	 		remove: remove,
+	 		hide: hide,
 	 	};
+	};
+
+	var Shot = function () {
+		var x = 0;
+		var y = -100;
+	 	var canvas = document.createElement("canvas");
+	 	var ctx = canvas.getContext('2d');
+	 	//Set up the canvas
+	 	canvas.width = 5;
+		canvas.height = 5;
+		canvas.style.position = 'absolute';
+		canvas.style.zIndex = '1000000';
+		canvas.style.top = x + 'px';
+		canvas.style.left = y + 'px';
+		document.body.appendChild(canvas);
+		ctx.save();
+ 		ctx.translate(canvas.width / 2, canvas.height / 2);
+		ctx.fillStyle= "#000000";
+		ctx.beginPath();
+		ctx.arc(0, 0, 2, 0, Math.PI*2, true); 
+		ctx.closePath();
+		ctx.fill();
+	 	ctx.restore();
+
+	 	function update(newX, newY) {
+	 		x = newX;
+	 		y = newY;
+	 		draw();
+	 	}
+
+	 	function draw() {
+	 		canvas.style.left = x + 'px';
+	 		canvas.style.top = y + 'px';
+	 	}
+
+	 	function hide() {
+	 		//Move the canvas off the sceen;
+	 		y = -100;
+	 		draw();
+	 	}
+
+	 	function remove() {
+	 		canvas.parentNode.removeChild(canvas);
+	 	}
 
 	 	return {
 	 		update : update,
@@ -82,6 +136,10 @@
 		tanks = [];
 		for (var i = 0; i < TANK_BUFFER; i++) {
 			tanks.push(new Tank());
+		};
+		shots = [];
+		for (var i = 0; i < SHOT_BUFFER; i++) {
+			shots.push(new Shot());
 		};
 		keyMap = {
 			"up" : false,
@@ -100,33 +158,55 @@
 			console.log("Io Is not Defined");
 		} else {
 			socket = io.connect("http://54.218.14.138", {port: 8124, transports: ["websocket"]});
+			//socket = io.connect("http://localhost", {port: 8124, transports: ["websocket"]});
 			socket.on("connect", onSocketConnected);
 			socket.on("update", update);
 		}
-
-	}
+	};
 
 	function onSocketConnected() {
 		console.log("Connected to socket server");
 		socket.emit("new player", {x: 100, y: 100});
-	};
+	}
 
 	function update(data) {
+		updatePlayers(data.playerLocations);
+		updateShots(data.shotLocations);
+	}
+
+	function updateShots(shotLocations) {
+		//If there are more shots than allocated sprites then create more
+		while (shotLocations.length > shots.length) {
+			console.log("Not Enough shot sprites, adding one more");
+			shots.push(new Shot());
+		}
+		//Move all the sprites.
+		for (var i = 0; i < shotLocations.length; i++) {
+			var player = shotLocations[i];
+			shots[i].update(player.x, player.y);
+		}
+		//Hide the unsued sprites.
+		for (var i = shotLocations.length; i < shots.length; i++) {
+			shots[i].hide();
+		}
+	}
+
+	function updatePlayers(playerLocations) {
 		//If there are more players than allocated sprites then create more
-		while (data.length > tanks.length) {
-			console.log("Not Enough sprites, adding one more");
+		while (playerLocations.length > tanks.length) {
+			console.log("Not Enough player sprites, adding one more");
 			tanks.push(new Tank());
 		}
 		//Move all the sprites.
-		for (var i = 0; i < data.length; i++) {
-			var player = data[i];
+		for (var i = 0; i < playerLocations.length; i++) {
+			var player = playerLocations[i];
 			tanks[i].update(player.x, player.y, player.rotation, player.turretRotation);
 		}
 		//Hide the unsued sprites.
-		for (var i = data.length; i < tanks.length; i++) {
+		for (var i = playerLocations.length; i < tanks.length; i++) {
 			tanks[i].hide();
 		}
-	};
+	}
 
 	function updateKeymap(isDown, event) {
 		var shouldUpdate = keyMap.shift != event.shiftKey;
@@ -149,6 +229,10 @@
 				keyMap.down = isDown;
 				break;
 		};
+
+		if (event.keyCode == 32) {
+			socket.emit("fire shot", {});
+		}
 
 		//Allways check for escape. to exit the game
 		if (event.keyCode == 27 && window.INGAME_WEBTANKZ) {
