@@ -4,9 +4,9 @@
 	var SHOT_BUFFER = 10;
 
  	var tankBody = new Image();
-	tankBody.src = 'http://54.218.14.138/webtankz/images/tank.png';
+	tankBody.src = 'http://dodgecube.com/webtankz/images/tank.png';
 	var tankTurret = new Image();
-	tankTurret.src = 'http://54.218.14.138/webtankz/images/turret.png';
+	tankTurret.src = 'http://dodgecube.com/webtankz/images/turret.png';
 	//Record the current key presses
 	var keyMap;
 	//The socket connection to the server
@@ -157,7 +157,7 @@
 			window.setTimeout(startSoket, 500);
 			console.log("Io Is not Defined");
 		} else {
-			socket = io.connect("http://54.218.14.138", {port: 8124, transports: ["websocket"]});
+			socket = io.connect("http://dodgecube.com", {port: 8124, transports: ["websocket"]});
 			//socket = io.connect("http://localhost", {port: 8124, transports: ["websocket"]});
 			socket.on("connect", onSocketConnected);
 			socket.on("update", update);
