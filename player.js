@@ -1,7 +1,7 @@
 
 var Player = function(startX, startY, rotation, turretRotation, id) {
-	var SPEED = 5;
-	var ROTATION_RATE = 6;
+	var SPEED = 12;
+	var ROTATION_RATE = 12;
 	var SHOT_DELAY = 30;
 
 	var x = startX,

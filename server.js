@@ -1,5 +1,5 @@
 
-var REFRESH_RATE = 30;
+var REFRESH_RATE = 100;
 
 var util = require("util"),
 	io = require("socket.io"),

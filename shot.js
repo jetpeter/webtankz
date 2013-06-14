@@ -1,6 +1,6 @@
 var Shot = function(startX, startY, rotation) {
 	var MAX_AGE = 40;
-	var SPEED  = 20;
+	var SPEED  = 25;
 	var x = startX;
 	var y = startY;
 	var rotation = rotation;
