@@ -15,7 +15,9 @@
     var shots;
 
     var Tank = function () {
+            //How often the screen is redrawn
         var UPDATE_INTERVOL = 33,
+            //How many times we are expecting to draw between server updades
             UPDATE_SPLIT = 3,
             x = 0,
             y = -100,
@@ -125,10 +127,17 @@
     };
 
     var Shot = function () {
+        // How long between each draw call
+        var UPDATE_INTERVOL = 33,
+        //How many times we are expecting to draw between server updades
+        var UPDATE_SPLIT = 5,
         var x = 0;
         var y = -100;
         var canvas = document.createElement("canvas");
         var ctx = canvas.getContext('2d');
+        var updater;
+        var xIntervol = 0;
+            yIntervol = 0;
         //Set up the canvas
         canvas.width = 5;
         canvas.height = 5;
@@ -147,20 +156,33 @@
         ctx.restore();
 
         function update(newX, newY) {
-            x = newX;
-            y = newY;
-            draw();
+            xIntervol = (newX - x) / UPDATE_SPLIT;
+            yIntervol = (newY - y) / UPDATE_SPLIT;
         }
 
-        function draw() {
+        function updateLocation() {
+            if (xIntervol != 0 || yIntervol != 0) {
+                x += xIntervol;
+                y += yIntervol;
+                moveCanvas();
+            }
+        }
+
+        function moveCanvas() {
             canvas.style.left = x + 'px';
             canvas.style.top = y + 'px';
         }
 
         function hide() {
             //Move the canvas off the sceen;
+            window.clearInterval(updater);
             y = -100;
             draw();
+        }
+
+        function show() {
+            //Move the canvas onto the screen and set the draw intervol
+            updater = setIntervol(updatLocation, UPDATE_INTERVOL)
         }
 
         function remove() {
@@ -171,6 +193,7 @@
             update : update,
             remove: remove,
             hide: hide,
+            show: show,
         };
     };
 
