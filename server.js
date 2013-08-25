@@ -80,6 +80,7 @@ function broadcastPlayerData() {
 function detectShotCollision(shot) {
     for (i = 0; i < players.length; i++) {
         player.hasCollided(shot);
+        players.splice(i, 1);
     };
 }
 

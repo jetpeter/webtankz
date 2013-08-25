@@ -101,8 +101,14 @@ var Player = function(startX, startY, rotation, turretRotation, id) {
     }
 
     function hasCollided(shot) {
+        var shotPos = shot.getPosition()
+        var hasColided = false;
+        if (approx(x, shotPos.x, 10) && approx(y, shotPos.y, 10))
+        return hasCollided;
+    }
 
-        return false;
+    function approx(p1, p2, margin) {
+        return (p1 + margin) > p2 && (p1 - margin) < p2
     }
 
     return {
