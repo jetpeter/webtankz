@@ -89,23 +89,12 @@ var Player = function(startX, startY, rotation, turretRotation, id) {
     }
 
     function rotateLeft(current) {
-        if (current <= 0) {
-            current += 360;
-        } else {
-            current -= ROTATION_RATE;
-        }
-        return current;
+        return current - ROTATION_RATE;
     }
 
     function rotateRight(current) {
-        if (current >= 360) {
-            current -= 360;
-        } else {
-            current += ROTATION_RATE;
-        }
-        return current;
+        return current + ROTATION_RATE;
     }
-
 
     return {
         update: update,

@@ -16,6 +16,7 @@
 
     var Tank = function () {
         var UPDATE_INTERVOL = 33,
+            UPDATE_SPLIT = 3,
             x = 0,
             y = -100,
             rotation = 180,
@@ -45,40 +46,12 @@
                 y += yIntervol;
                 moveCanvas();
             }
-            if (rotationIntervol != 0 || turretRotationIntervol != 0) {
+            //Dont bother redrawing the rotation in the canvas if there is nothing to rotate.
+            if (Math.floor(rotationIntervol) != 0 || Math.floor(turretRotationIntervol) != 0) {
                 rotation += rotationIntervol;
-                fixRotation(rotation)
-                console.log("Intervol: " + turretRotationIntervol);
                 turretRotation += turretRotationIntervol;
-                fixRotation(turretRotation);
                 drawRotation();
             }
-        }
-
-        function fixRotation(delta){
-            if (delta <= 0) {
-                delta += 360;
-            } else if (delta >= 360) {
-                delta -= 360;
-            }
-        }
-
-        function rotateLeft(current) {
-            if (current <= 0) {
-                current += 360;
-            } else {
-                current -= ROTATION_RATE;
-            }
-            return current;
-        }
-
-        function rotateRight(current) {
-            if (current >= 360) {
-                current -= 360;
-            } else {
-                current += ROTATION_RATE;
-            }
-            return current;
         }
 
         function moveCanvas() {
@@ -105,10 +78,16 @@
         }
 
         function update(newX, newY, newRotation, newTRotation) {
-            xIntervol = (newX - x) / 3
-            yIntervol = (newY - y) / 3;
-            rotationIntervol = (newRotation - rotation) / 3;
-            turretRotationIntervol = (newTRotation - turretRotation) / 3;
+            xIntervol = (newX - x) / UPDATE_SPLIT;
+            yIntervol = (newY - y) / UPDATE_SPLIT;
+            rotationIntervol = getRotationIntervol(newRotation, rotation);
+            turretRotationIntervol = getRotationIntervol(newTRotation, turretRotation);
+        }
+
+        function getRotationIntervol(angleOne, angleTwo) {
+            var delta = ((angleOne - angleTwo + 180) % 360) - 180;
+            var intervol = delta / UPDATE_SPLIT;
+            return intervol;
         }
 
         function hide() {
