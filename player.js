@@ -1,6 +1,6 @@
 var Player = function(startX, startY, rotation, turretRotation, id) {
-    var SPEED = 18;
-    var ROTATION_RATE = 18;
+    var SPEED = 20;
+    var ROTATION_RATE = 20;
     var SHOT_DELAY = 30;
 
     var x = startX,
@@ -63,10 +63,15 @@ var Player = function(startX, startY, rotation, turretRotation, id) {
 
 
     function updateRotation() {
-        if (turretRotation == 0 || turretRotation == 360) {
+	var sinR = Math.sin(turretRotation * Math.PI/180);
+	var cosR = Math.cos(turretRotation * Math.PI/180);
+        //Check if the position is very close to 0
+        //I cant use == because Math.sin will often return something
+        //like -2.4e-16 :/
+        if (cosR == 1) {
             return;
         }
-        if (turretRotation > 180) {
+        if (sinR < 0) {
             turretRotation = rotateRight(turretRotation);
             rotation = rotateLeft(rotation);
         } else {
