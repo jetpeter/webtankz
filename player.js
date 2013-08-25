@@ -63,14 +63,13 @@ var Player = function(startX, startY, rotation, turretRotation, id) {
 
 
     function updateRotation() {
-	var sinR = Math.sin(turretRotation * Math.PI/180);
-	var cosR = Math.cos(turretRotation * Math.PI/180);
-        //Check if the position is very close to 0
-        //I cant use == because Math.sin will often return something
-        //like -2.4e-16 :/
+        var sinR = Math.sin(turretRotation * Math.PI/180);
+        var cosR = Math.cos(turretRotation * Math.PI/180);
+        //Check if the turret is at 0 degrees
         if (cosR == 1) {
             return;
         }
+        //Rotate the turret and body in the same direction
         if (sinR < 0) {
             turretRotation = rotateRight(turretRotation);
             rotation = rotateLeft(rotation);
@@ -101,12 +100,18 @@ var Player = function(startX, startY, rotation, turretRotation, id) {
         return current + ROTATION_RATE;
     }
 
+    function hasCollided(shot) {
+
+        return false;
+    }
+
     return {
         update: update,
         getPosition: getPosition,
         getId: getId,
         updateKeyMap: updateKeyMap,
         getPositionForShot: getPositionForShot,
+        hasCollided: hasCollided,
     }
 }
 

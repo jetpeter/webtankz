@@ -57,24 +57,31 @@ function onClientConnect(data) {
 
 function broadcastPlayerData() {
     var locations = [],
+        shotLocations = [],
         i;
-    for (i = 0; i < players.length; i++) {
-        var player = players[i];
-        player.update();
-        locations.push(player.getPosition());
-    };
-    var shotLocations = [];
     for (i = 0; i < shots.length; i++) {
         var shot = shots[i];
         if (shot.isOverMaxAge()) {
             shots.splice(i, 1);
         } else {
             shot.updatePosition();
+            detectShotCollision(shot);
             shotLocations.push(shot.getPosition());
         }
     };
+    for (i = 0; i < players.length; i++) {
+        var player = players[i];
+        player.update();
+        locations.push(player.getPosition());
+    };
     socket.sockets.emit("update", {"playerLocations": locations, "shotLocations": shotLocations});
 };
+
+function detectShotCollision(shot) {
+    for (i = 0; i < players.length; i++) {
+        player.hasCollided(shot);
+    };
+}
 
 function updatePressedKeys(data) {
     var player = playerById(this.id);
