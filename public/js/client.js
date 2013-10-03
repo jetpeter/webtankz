@@ -16,15 +16,15 @@
 
     var Tank = function () {
             //How often the screen is redrawn
-        var UPDATE_INTERVOL = 33,
+        var UPDATE_INTERVOL = 11,
             //How many times we are expecting to draw between server updades
-            UPDATE_SPLIT = 3,
+            UPDATE_SPLIT = 11,
             x = 0,
             y = -100,
-            rotation = 180,
+            rotation = 0,
             turretRotation = 0,
-            xIntervol = 0,
-            yIntervol = 0,
+            xWaypoint = x,
+            yWaypoint = y,
             rotationIntervol = 0,
             turretRotationIntervol = 0,
             canvas = document.createElement("canvas"),
@@ -43,11 +43,9 @@
         document.body.appendChild(canvas);
 
         function updateLocation() {
-            if (xIntervol != 0 || yIntervol != 0) {
-                x += xIntervol;
-                y += yIntervol;
-                moveCanvas();
-            }
+            x += (xWaypoint - x) / UPDATE_SPLIT;
+            y += (yWaypoint - y) / UPDATE_SPLIT;
+            moveCanvas();
             //Dont bother redrawing the rotation in the canvas if there is nothing to rotate.
             if (Math.floor(rotationIntervol) != 0 || Math.floor(turretRotationIntervol) != 0) {
                 rotation += rotationIntervol;
@@ -80,8 +78,8 @@
         }
 
         function update(newX, newY, newRotation, newTRotation) {
-            xIntervol = (newX - x) / UPDATE_SPLIT;
-            yIntervol = (newY - y) / UPDATE_SPLIT;
+            xWaypoint = newX;
+            yWaypoint = newY;
             rotationIntervol = getRotationIntervol(newRotation, rotation);
             turretRotationIntervol = getRotationIntervol(newTRotation, turretRotation);
         }
@@ -128,9 +126,9 @@
 
     var Shot = function () {
         // How long between each draw call
-        var UPDATE_INTERVOL = 33,
+        var UPDATE_INTERVOL = 33;
         //How many times we are expecting to draw between server updades
-        var UPDATE_SPLIT = 5,
+        var UPDATE_SPLIT = 5;
         var x = 0;
         var y = -100;
         var canvas = document.createElement("canvas");
