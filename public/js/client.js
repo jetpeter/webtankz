@@ -175,7 +175,7 @@
             //Move the canvas off the sceen;
             window.clearInterval(updater);
             y = -100;
-            draw();
+            moveCanvas();
         }
 
         function show() {
