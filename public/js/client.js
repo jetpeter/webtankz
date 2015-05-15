@@ -280,18 +280,22 @@
         var shouldUpdate = keyMap.shift != event.shiftKey;
         keyMap.shift = event.shiftKey;
         switch (event.keyCode) {
+            case 65:
             case 37: // Left
                 shouldUpdate = keyMap.left != isDown;
                 keyMap.left = isDown;
                 break;
+            case 87:
             case 38: // Up
                 shouldUpdate = keyMap.up != isDown;
                 keyMap.up= isDown;
                 break;
+            case 68:
             case 39: // Right
                 shouldUpdate = keyMap.right != isDown;
                 keyMap.right = isDown;
                 break;
+            case 83:
             case 40: // down
                 shouldUpdate = keyMap.down != isDown;
                 keyMap.down = isDown;
