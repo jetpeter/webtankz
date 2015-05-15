@@ -221,7 +221,7 @@
             window.setTimeout(startSoket, 500);
             console.log("Io Is not Defined");
         } else {
-            socket = io.connect("http://dodgecube.com", {port: 8124, transports: ["websocket"]});
+            socket = io.connect("http://dodgecube.com:8124");
             //socket = io.connect("http://localhost", {port: 8124, transports: ["websocket"]});
             socket.on("connect", onSocketConnected);
             socket.on("update", update);

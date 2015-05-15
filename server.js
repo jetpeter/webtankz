@@ -2,10 +2,9 @@
 var REFRESH_RATE = 100;
 
 var util = require("util"),
-    io = require("socket.io"),
+    io = require("socket.io")(8124),
     Player = require('./player').Player,
     Shot = require('./shot').Shot,
-    socket,
     players,
     shots,
     instance;
@@ -13,12 +12,7 @@ var util = require("util"),
 function init() {
     players = [];
     shots = [];
-    socket = io.listen(8124);
-    socket.configure(function() {
-        socket.set("transports", ["websocket"]);
-        socket.set("log level", 2);
-    });
-    socket.sockets.on("connection", onSocketConnection);
+    io.on("connection", onSocketConnection);
 };
 
 function onSocketConnection(client) {
@@ -74,7 +68,7 @@ function broadcastPlayerData() {
         player.update();
         locations.push(player.getPosition());
     };
-    socket.sockets.emit("update", {"playerLocations": locations, "shotLocations": shotLocations});
+    io.emit("update", {"playerLocations": locations, "shotLocations": shotLocations});
 };
 
 function detectShotCollision(shot) {
