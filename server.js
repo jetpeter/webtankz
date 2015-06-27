@@ -20,7 +20,7 @@ function onSocketConnection(client) {
     client.on('disconnect', onClientDisconnect);
     client.on('new player', onClientConnect);
     client.on('update keys', updatePressedKeys);
-    //client.on('fire shot', newShot);
+    client.on('fire shot', newShot);
 };
 
 function onClientDisconnect() {
